@@ -15,6 +15,18 @@ _progressView = [[BKECircularProgressView alloc] initWithFrame:CGRectMake(100, 2
 [self.view addSubview:_progressView];
 ```
 
-## Installation
+## Adding To Your Project
 
-Simply add the files `BKECircularProgressView.h` and `BKECircularProgressView.h` to your project.
+### CocoaPods
+
+If you are using [CocoaPods](http://cocoapods.org) than just add next line to your `Podfile`:
+
+``` ruby
+pod 'BKECircularProgressView'
+```
+
+Now run `pod install` to install the dependency.
+
+### Manually
+
+Simply add the files `BKECircularProgressView.h` and `BKECircularProgressView.m` to your project.

@@ -1,0 +1,15 @@
+*.mode1v3
+*.pbxuser
+*.perspectivev3
+*.xcworkspace
+xcuserdata
+
+.DS_Store
+.svn
+*~
+.ackrc
+*.swp
+*.tmproj
+tmtags
+.sass-cache
+.bundle

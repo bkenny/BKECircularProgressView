@@ -25,6 +25,14 @@
     return self;
 }
 
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    self = [super initWithCoder:aDecoder];
+    if (self) {
+        [self setup];
+    }
+    return self;
+}
+
 - (void)setup {
     self.backgroundColor = [UIColor clearColor];
     
@@ -88,7 +96,6 @@
     processPath.lineCapStyle = kCGLineCapButt;
     processPath.lineWidth = _lineWidth;
     
-    radius = (self.bounds.size.width - _lineWidth) / 2.0;
     [processPath addArcWithCenter:center radius:radius startAngle:startAngle endAngle:endAngle clockwise:YES];
     
     [_progressLayer setPath:processPath.CGPath];

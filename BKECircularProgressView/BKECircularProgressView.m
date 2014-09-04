@@ -12,29 +12,34 @@
 @property (nonatomic, strong) CAShapeLayer *progressBackgroundLayer;
 @property (nonatomic, strong) CAShapeLayer *progressLayer;
 @property (nonatomic, strong) CAGradientLayer *gradientLayer;
+@property BOOL usingGradientProgress;
 
 @end
 
 @implementation BKECircularProgressView
 
-- (id)initWithFrame:(CGRect)frame
+- (id)initWithFrame:(CGRect)frame andUseGradientProgress:(BOOL)gradientProgress
 {
     self = [super initWithFrame:frame];
     if (self) {
-        [self setup];
+        [self setup:gradientProgress];
     }
     return self;
 }
 
-- (id)initWithCoder:(NSCoder *)aDecoder {
+- (id)initWithCoder:(NSCoder *)aDecoder andUseGradientProgress:(BOOL)gradientProgress
+{
     self = [super initWithCoder:aDecoder];
     if (self) {
-        [self setup];
+        [self setup:gradientProgress];
     }
     return self;
 }
 
-- (void)setup {
+- (void)setup:(BOOL)useGradientProgress
+{
+    _usingGradientProgress = useGradientProgress;
+    
     self.backgroundColor = [UIColor clearColor];
     
     _lineWidth = fmaxf(self.frame.size.width * 0.025, 1.f);
@@ -54,12 +59,15 @@
     _progressLayer.lineWidth = _lineWidth;
     [self.layer addSublayer:_progressLayer];
     
-    _gradientLayer = [CAGradientLayer layer];
-    _gradientLayer.colors = @[(__bridge id)[UIColor redColor].CGColor,(__bridge id)[UIColor blueColor].CGColor];
-    _gradientLayer.startPoint = CGPointMake(0, 0.5);
-    _gradientLayer.endPoint = CGPointMake(1, 0.5);
-    
-    [self.layer addSublayer:_gradientLayer];
+    if(_usingGradientProgress)
+    {
+        _gradientLayer = [CAGradientLayer layer];
+        _gradientLayer.colors = @[(__bridge id)[UIColor redColor].CGColor,(__bridge id)[UIColor blueColor].CGColor];
+        _gradientLayer.startPoint = CGPointMake(0, 0.5);
+        _gradientLayer.endPoint = CGPointMake(1, 0.5);
+        
+        [self.layer addSublayer:_gradientLayer];
+    }
 }
 
 #pragma mark Setters
@@ -84,8 +92,11 @@
 
 - (void)setProgressGradientColors:(NSArray *)progressGradientColors
 {
-    _gradientLayer.colors = progressGradientColors;
-    _gradientLayer.mask = _progressLayer;
+    if(_usingGradientProgress)
+    {
+        _gradientLayer.colors = progressGradientColors;
+        _gradientLayer.mask = _progressLayer;
+    }
 }
 
 #pragma mark Drawing
@@ -95,7 +106,8 @@
     // Make sure the layers cover the whole view
     _progressBackgroundLayer.frame = self.bounds;
     _progressLayer.frame = self.bounds;
-    _gradientLayer.frame = self.bounds;
+    
+    if (_usingGradientProgress) _gradientLayer.frame = self.bounds;
     
     CGPoint center = CGPointMake(self.bounds.size.width/2, self.bounds.size.height/2);
     CGFloat radius = (self.bounds.size.width - _lineWidth)/2;

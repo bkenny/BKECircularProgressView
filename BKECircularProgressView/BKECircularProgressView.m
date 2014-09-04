@@ -22,25 +22,7 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-        [self setup:NO];
-    }
-    return self;
-}
-
-- (id)initWithFrame:(CGRect)frame andUseGradientProgress:(BOOL)gradientProgress
-{
-    self = [super initWithFrame:frame];
-    if (self) {
-        [self setup:gradientProgress];
-    }
-    return self;
-}
-
-- (id)initWithCoder:(NSCoder *)aDecoder andUseGradientProgress:(BOOL)gradientProgress
-{
-    self = [super initWithCoder:aDecoder];
-    if (self) {
-        [self setup:gradientProgress];
+        [self setup];
     }
     return self;
 }
@@ -49,14 +31,14 @@
 {
     self = [super initWithCoder:aDecoder];
     if (self) {
-        [self setup:NO];
+        [self setup];
     }
     return self;
 }
 
-- (void)setup:(BOOL)useGradientProgress
+- (void)setup
 {
-    _usingGradientProgress = useGradientProgress;
+    _usingGradientProgress = NO;
     
     self.backgroundColor = [UIColor clearColor];
     
@@ -76,16 +58,18 @@
     _progressLayer.lineCap = kCALineCapSquare;
     _progressLayer.lineWidth = _lineWidth;
     [self.layer addSublayer:_progressLayer];
+}
+
+- (void)useGradientProgress
+{
+    _usingGradientProgress = YES;
     
-    if(_usingGradientProgress)
-    {
-        _gradientLayer = [CAGradientLayer layer];
-        _gradientLayer.colors = @[(__bridge id)[UIColor redColor].CGColor,(__bridge id)[UIColor blueColor].CGColor];
-        _gradientLayer.startPoint = CGPointMake(0, 0.5);
-        _gradientLayer.endPoint = CGPointMake(1, 0.5);
-        
-        [self.layer addSublayer:_gradientLayer];
-    }
+    _gradientLayer = [CAGradientLayer layer];
+    _gradientLayer.colors = @[(__bridge id)[UIColor redColor].CGColor,(__bridge id)[UIColor blueColor].CGColor];
+    _gradientLayer.startPoint = CGPointMake(0, 0.5);
+    _gradientLayer.endPoint = CGPointMake(1, 0.5);
+    
+    [self.layer addSublayer:_gradientLayer];
 }
 
 #pragma mark Setters

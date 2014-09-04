@@ -13,14 +13,9 @@
 @interface BKECircularProgressView : UIView
 
 /**
- * initWithFrame using gradient progress.
+ * Use gradient colors to draw the progress view.
  **/
-- (id)initWithFrame:(CGRect)frame andUseGradientProgress:(BOOL)gradientProgress;
-
-/**
- * initWithCoder using gradient progress.
- **/
-- (id)initWithCoder:(NSCoder *)aDecoder andUseGradientProgress:(BOOL)gradientProgress;
+- (void)useGradientProgress;
 
 /**
  * The progress of the view.

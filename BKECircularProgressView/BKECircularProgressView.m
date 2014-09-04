@@ -34,6 +34,8 @@
 }
 
 - (void)setup {
+    self.centralView = nil;
+    
     self.backgroundColor = [UIColor clearColor];
     
     _lineWidth = fmaxf(self.frame.size.width * 0.025, 1.f);
@@ -74,6 +76,16 @@
     _progressLayer.lineWidth = _lineWidth;
 }
 
+- (void)setCentralView:(UIView *)centralView
+{
+    if (_centralView != centralView)
+    {
+        [_centralView removeFromSuperview];
+        _centralView = centralView;
+        [self addSubview:self.centralView];
+    }
+}
+
 #pragma mark Drawing
 
 - (void)drawRect:(CGRect)rect
@@ -101,7 +113,7 @@
     [_progressLayer setPath:processPath.CGPath];
 }
 
-- (void) drawBackgroundCircle {
+- (void)drawBackgroundCircle {
     CGFloat startAngle = - ((float)M_PI / 2); // 90 degrees
     CGFloat endAngle = (2 * (float)M_PI) + startAngle;
     CGPoint center = CGPointMake(self.bounds.size.width/2, self.bounds.size.height/2);
@@ -125,6 +137,14 @@
         
         [self setNeedsDisplay];
     }
+}
+
+#pragma mark - Layout
+
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
+    self.centralView.center = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
 }
 
 @end

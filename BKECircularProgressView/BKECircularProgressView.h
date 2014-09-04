@@ -32,4 +32,13 @@
  */
 @property (nonatomic, strong) UIColor *backgroundTintColor;
 
+/**
+ *  The view in the center of the progress view.
+ *
+ *  Can be set to anything you want though, a label with the progress, a stop button etc.
+ *
+ *  Defaults to nil.
+ */
+@property (nonatomic, strong) UIView *centralView;
+
 @end

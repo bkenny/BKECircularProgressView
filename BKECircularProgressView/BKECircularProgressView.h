@@ -13,6 +13,16 @@
 @interface BKECircularProgressView : UIView
 
 /**
+ * initWithFrame using gradient progress.
+ **/
+- (id)initWithFrame:(CGRect)frame andUseGradientProgress:(BOOL)gradientProgress;
+
+/**
+ * initWithCoder using gradient progress.
+ **/
+- (id)initWithCoder:(NSCoder *)aDecoder andUseGradientProgress:(BOOL)gradientProgress;
+
+/**
  * The progress of the view.
  **/
 @property (nonatomic, assign) CGFloat progress;

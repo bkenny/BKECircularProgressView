@@ -32,9 +32,17 @@
  */
 @property (nonatomic, strong) UIColor *backgroundTintColor;
 
-/**
+/*
  * The colors gradient of the progress view
  */
 @property (nonatomic, strong) NSArray *progressGradientColors;
+ /*
+ *  The view in the center of the progress view.
+ *
+ *  Can be set to anything you want though, a label with the progress, a stop button etc.
+ *
+ *  Defaults to nil.
+ */
+@property (nonatomic, strong) UIView *centralView;
 
 @end

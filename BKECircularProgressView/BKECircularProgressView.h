@@ -13,11 +13,6 @@
 @interface BKECircularProgressView : UIView
 
 /**
- * Use gradient colors to draw the progress view.
- **/
-- (void)useGradientProgress;
-
-/**
  * The progress of the view.
  **/
 @property (nonatomic, assign) CGFloat progress;

@@ -11,6 +11,7 @@
 @interface BKECircularProgressView()
 @property (nonatomic, strong) CAShapeLayer *progressBackgroundLayer;
 @property (nonatomic, strong) CAShapeLayer *progressLayer;
+@property (nonatomic, strong) CAGradientLayer *gradientLayer;
 
 @end
 
@@ -25,7 +26,8 @@
     return self;
 }
 
-- (id)initWithCoder:(NSCoder *)aDecoder {
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
     self = [super initWithCoder:aDecoder];
     if (self) {
         [self setup];
@@ -33,7 +35,9 @@
     return self;
 }
 
-- (void)setup {
+- (void)setup
+{
+    
     self.backgroundColor = [UIColor clearColor];
     
     _lineWidth = fmaxf(self.frame.size.width * 0.025, 1.f);
@@ -52,6 +56,13 @@
     _progressLayer.lineCap = kCALineCapSquare;
     _progressLayer.lineWidth = _lineWidth;
     [self.layer addSublayer:_progressLayer];
+    
+    self.gradientLayer = [CAGradientLayer layer];
+
+    _gradientLayer.frame = self.bounds;
+    _gradientLayer.startPoint = CGPointMake(0, 0.5);
+    _gradientLayer.endPoint = CGPointMake(1, 0.5);
+    [self.layer addSublayer:_gradientLayer];
 }
 
 #pragma mark Setters
@@ -74,13 +85,19 @@
     _progressLayer.lineWidth = _lineWidth;
 }
 
+- (void)setProgressGradientColors:(NSArray *)progressGradientColors
+{
+    _gradientLayer.colors = progressGradientColors;
+    _gradientLayer.mask = _progressLayer;
+}
+
 #pragma mark Drawing
 
 - (void)drawRect:(CGRect)rect
 {
     // Make sure the layers cover the whole view
     _progressBackgroundLayer.frame = self.bounds;
-    _progressLayer.frame = self.bounds;
+    _progressLayer.frame = self.bounds;    
     
     CGPoint center = CGPointMake(self.bounds.size.width/2, self.bounds.size.height/2);
     CGFloat radius = (self.bounds.size.width - _lineWidth)/2;

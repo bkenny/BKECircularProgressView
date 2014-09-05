@@ -32,4 +32,9 @@
  */
 @property (nonatomic, strong) UIColor *backgroundTintColor;
 
+/**
+ * The colors gradient of the progress view
+ */
+@property (nonatomic, strong) NSArray *progressGradientColors;
+
 @end

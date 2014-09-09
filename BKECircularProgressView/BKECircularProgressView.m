@@ -17,6 +17,8 @@
 
 @implementation BKECircularProgressView
 
+#pragma mark - Init
+
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
@@ -39,8 +41,15 @@
 - (void)setup {
     self.centralView = nil;
     
+    self.removeFromSuperViewOnHide = NO;
+
+    // Make it invisible for now
+    self.alpha = 0.0f;
+    
     self.backgroundColor = [UIColor clearColor];
     _innerCircleColor = [UIColor clearColor];
+    
+    _progress = 0.0f;
     
     _lineWidth = fmaxf(self.frame.size.width * 0.025, 1.f);
     _progressTintColor = [UIColor redColor];
@@ -125,7 +134,6 @@
     
     // Draw progress
     CGFloat startAngle = - ((float)M_PI / 2); // 90 degrees
-    // CGFloat endAngle = (2 * (float)M_PI) + startAngle;
     CGFloat endAngle = (self.progress * 2 * (float)M_PI) + startAngle;
     UIBezierPath *processPath = [UIBezierPath bezierPath];
     processPath.lineCapStyle = kCGLineCapButt;
@@ -166,7 +174,7 @@
         if (animated)
         {
             CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
-            animation.fromValue = self.progress == 0 ? @0 : nil;
+            animation.fromValue = @(self.progress);
             animation.toValue = [NSNumber numberWithFloat:progress];
             animation.duration = 1;
             self.progressLayer.strokeEnd = progress;
@@ -196,6 +204,49 @@
 {
     [super layoutSubviews];
     self.centralView.center = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
+}
+
+#pragma mark - Visibility
+
+- (instancetype)BKEProgressForView:(UIView *)view
+{
+	NSEnumerator *subviewsEnum = [view.subviews reverseObjectEnumerator];
+	for (UIView *subview in subviewsEnum)
+    {
+		if ([subview isKindOfClass:[BKECircularProgressView class]])
+        {
+			return (BKECircularProgressView *)subview;
+		}
+	}
+	return nil;
+}
+
+- (BOOL)hideBKEProgressForView:(UIView *)view
+{
+	BKECircularProgressView *progressView = [self BKEProgressForView:view];
+	if (progressView != nil)
+    {
+		progressView.removeFromSuperViewOnHide = YES;
+		[progressView hide];
+		return YES;
+	}
+	return NO;
+}
+
+- (void)hide
+{
+	[NSObject cancelPreviousPerformRequestsWithTarget:self];
+	self.alpha = 0.0f;
+	if (self.removeFromSuperViewOnHide)
+    {
+		[self removeFromSuperview];
+	}
+}
+
+- (void)show
+{
+    [self setNeedsDisplay];
+    self.alpha = 1.0f;
 }
 
 @end

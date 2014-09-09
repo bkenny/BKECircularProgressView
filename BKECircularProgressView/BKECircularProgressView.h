@@ -37,17 +37,17 @@
  */
 @property (nonatomic, strong) UIColor *backgroundTintColor;
 
-/*
+/**
  * The colors gradient of the progress view
  */
 @property (nonatomic, strong) NSArray *progressGradientColors;
 
-/*
+/**
  * The color inner circle
  */
 @property (nonatomic, strong) UIColor *innerCircleColor;
 
- /*
+/**
  *  The view in the center of the progress view.
  *
  *  Can be set to anything you want though, a label with the progress, a stop button etc.
@@ -55,5 +55,23 @@
  *  Defaults to nil.
  */
 @property (nonatomic, strong) UIView *centralView;
+
+/**
+ * Removes the progress of the view from its parent view when hidden.
+ * Defaults to NO.
+ */
+@property (assign) BOOL removeFromSuperViewOnHide;
+
+/**
+ * Display the BKECircularProgressView. You need to make sure that the main thread completes its run loop soon after this method call so
+ * the user interface can be updated. Call this method when your task is already set-up to be executed in a new thread
+ */
+- (void)show;
+
+/**
+ * Hide the BKECircularProgressView. This is the counterpart of the show: method. Use it to
+ * hide the BKECircularProgressView when your task completes.
+ */
+- (void)hide;
 
 @end

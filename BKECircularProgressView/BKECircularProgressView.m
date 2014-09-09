@@ -153,6 +153,7 @@
 
 - (void)setProgress:(CGFloat)progress animated:(BOOL)animated
 {
+    if (progress > 1.0f) progress = 1.0f;
     if (progress > 0)
     {
         if (animated)

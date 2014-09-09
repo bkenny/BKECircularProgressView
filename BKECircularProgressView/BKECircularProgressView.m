@@ -67,7 +67,6 @@
     
     self.maskLayer = [CAShapeLayer layer];
     
-    _maskLayer.lineCap = kCALineCapSquare;
     _maskLayer.lineWidth = _lineWidth;
     _maskLayer.strokeColor = [UIColor blackColor].CGColor;
     _maskLayer.strokeEnd = 0;
@@ -159,11 +158,6 @@
     
     // Draw background
     [self drawBackgroundCircle];
-
-    // Draw progress
-    CGContextSetFillColorWithColor(ctx, self.progressTintColor.CGColor);
-    CGContextSetStrokeColorWithColor(ctx, self.progressTintColor.CGColor);
-    CGContextStrokeEllipseInRect(ctx, CGRectInset(self.bounds, 1, 1));
 }
 
 - (void)drawBackgroundCircle

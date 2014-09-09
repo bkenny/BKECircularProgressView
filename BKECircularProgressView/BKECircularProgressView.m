@@ -45,9 +45,6 @@
     self.baseLayer = nil;
     
     self.removeFromSuperViewOnHide = NO;
-
-    // Make it invisible for now
-    self.alpha = 0.0f;
     
     self.backgroundColor = [UIColor clearColor];
     _innerCircleColor = [UIColor clearColor];

@@ -40,7 +40,6 @@
     [_progressView setBackgroundTintColor:[UIColor colorWithRed:223.0/255.0 green:223.0/255.0 blue:223.0/255.0 alpha:1]];
     [_progressView setCentralView:label];
     [_progressView setLineWidth:3.0f];
-    [_progressView setAlpha:1.0f];
     [self.view addSubview:_progressView];
 }
 

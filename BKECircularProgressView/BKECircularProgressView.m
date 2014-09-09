@@ -145,13 +145,40 @@
     _progressBackgroundLayer.path = processBackgroundPath.CGPath;
 }
 
-- (void)setProgress:(CGFloat)progress {
-    if (progress > 1.0) progress = 1.0;
-    
-    if (_progress != progress) {
+- (void)setProgress:(CGFloat)progress
+{
+    [self setProgress:progress animated:NO];
+    [self setNeedsDisplay];
+}
+
+- (void)setProgress:(CGFloat)progress animated:(BOOL)animated
+{
+    if (progress > 0)
+    {
+        if (animated)
+        {
+            CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
+            animation.fromValue = self.progress == 0 ? @0 : nil;
+            animation.toValue = [NSNumber numberWithFloat:progress];
+            animation.duration = 1;
+            self.progressLayer.strokeEnd = progress;
+            [self.progressLayer addAnimation:animation forKey:@"animation"];
+        }
+        else {
+            [CATransaction begin];
+            [CATransaction setDisableActions:YES];
+            self.progressLayer.strokeEnd = progress;
+            [CATransaction commit];
+        }
+    }
+    else
+    {
+        self.progressLayer.strokeEnd = 0.0f;
+        [self.progressLayer removeAnimationForKey:@"animation"];
+    }
+    if (_progress != progress)
+    {
         _progress = progress;
-        
-        [self setNeedsDisplay];
     }
 }
 

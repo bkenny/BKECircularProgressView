@@ -127,8 +127,10 @@
 #pragma mark Drawing
 
 - (void)drawRect:(CGRect)rect
-{    
+{
     CGContextRef ctx = UIGraphicsGetCurrentContext();
+    
+    // Draw inner circle
     CGContextSetFillColorWithColor(ctx, _innerCircleColor.CGColor);
     CGContextAddEllipseInRect(ctx, CGRectMake(rect.origin.x + _lineWidth, rect.origin.y + _lineWidth,
                                                 rect.size.width - (_lineWidth*2), rect.size.height - (_lineWidth*2)));
@@ -136,15 +138,17 @@
     
     // Draw background
     [self drawBackgroundCircle];
-    
+
+    // Draw progress
     CGContextSetFillColorWithColor(ctx, self.progressTintColor.CGColor);
     CGContextSetStrokeColorWithColor(ctx, self.progressTintColor.CGColor);
     CGContextStrokeEllipseInRect(ctx, CGRectInset(self.bounds, 1, 1));
 }
 
-- (void)drawBackgroundCircle {
-    CGFloat startAngle = - ((float)M_PI / 2); // 90 degrees
-    CGFloat endAngle = (2 * (float)M_PI) + startAngle;
+- (void)drawBackgroundCircle
+{
+    CGFloat startAngle = -M_PI_2; // 90 degrees
+    CGFloat endAngle = startAngle + (2 * M_PI);
     CGPoint center = CGPointMake(self.bounds.size.width/2, self.bounds.size.height/2);
     CGFloat radius = (self.bounds.size.width - _lineWidth)/2;
     

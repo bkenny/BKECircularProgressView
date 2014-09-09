@@ -13,9 +13,14 @@
 @interface BKECircularProgressView : UIView
 
 /**
- * The progress of the view.
+ * The progress of the view. Only valid for values between `0` and `1`.
  **/
 @property (nonatomic, assign) CGFloat progress;
+
+/**
+ Set the progress of the circular view in an animated manner. Only valid for values between `0` and `1`.
+ */
+- (void)setProgress:(CGFloat)progress animated:(BOOL)animated;
 
 /**
  * The width of the line used to draw the progress view.

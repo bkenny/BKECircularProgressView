@@ -57,6 +57,21 @@
     }
 }
 
+- (IBAction)segmentValueChanged:(id)sender
+{
+    UISegmentedControl *segmentedControl = (UISegmentedControl *) sender;
+    NSInteger selectedSegment = segmentedControl.selectedSegmentIndex;
+    
+    if (selectedSegment == 0)
+    {
+        [_progressView setProgressTintColor:[UIColor colorWithRed:224.0/255.0 green:80.0/255.0 blue:15.0/255.0 alpha:1]];
+    }
+    else
+    {
+        [_progressView setProgressGradientColors:@[(__bridge id)[UIColor redColor].CGColor, (__bridge id)[UIColor blueColor].CGColor]];
+    }
+}
+
 - (IBAction)btnAnimateTouched:(id)sender
 {
     CGFloat progress = self.sliderProgress.value;

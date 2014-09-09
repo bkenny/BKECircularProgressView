@@ -15,10 +15,12 @@
 @property (strong, nonatomic) IBOutlet UIButton *btnAnimate;
 @property (strong, nonatomic) IBOutlet UISwitch *switchInnerCircle;
 @property (strong, nonatomic) IBOutlet UISlider *sliderProgress;
+@property (strong, nonatomic) IBOutlet UISegmentedControl *segmentColorControl;
 
 - (IBAction)btnShowTouched:(id)sender;
 - (IBAction)btnHideTouched:(id)sender;
 - (IBAction)btnAnimateTouched:(id)sender;
 - (IBAction)toggleInnerCircle:(id)sender;
+- (IBAction)segmentValueChanged:(id)sender;
 
 @end

@@ -9,9 +9,10 @@
 #import "BKECircularProgressView.h"
 
 @interface BKECircularProgressView()
+
 @property (nonatomic, strong) CAShapeLayer *progressBackgroundLayer;
-@property (nonatomic, strong) CAShapeLayer *progressLayer;
-@property (nonatomic, strong) CAGradientLayer *gradientLayer;
+@property (nonatomic, strong) CAShapeLayer *maskLayer;
+@property (nonatomic, strong) CALayer *baseLayer;
 
 @end
 
@@ -38,8 +39,10 @@
 }
 
 
-- (void)setup {
+- (void)setup
+{
     self.centralView = nil;
+    self.baseLayer = nil;
     
     self.removeFromSuperViewOnHide = NO;
 
@@ -62,21 +65,13 @@
     _progressBackgroundLayer.lineWidth = _lineWidth;
     [self.layer addSublayer:_progressBackgroundLayer];
     
-    self.progressLayer = [CAShapeLayer layer];
+    self.maskLayer = [CAShapeLayer layer];
     
-    _progressLayer.lineCap = kCALineCapSquare;
-    _progressLayer.lineWidth = _lineWidth;
-    _progressLayer.strokeColor = self.progressTintColor.CGColor;
-    _progressLayer.strokeEnd = 0;
-    _progressLayer.fillColor = nil;
-    [self.layer addSublayer:_progressLayer];
-    
-    self.gradientLayer = [CAGradientLayer layer];
-
-    _gradientLayer.frame = self.bounds;
-    _gradientLayer.startPoint = CGPointMake(0, 0.5);
-    _gradientLayer.endPoint = CGPointMake(1, 0.5);
-    [self.layer addSublayer:_gradientLayer];
+    _maskLayer.lineCap = kCALineCapSquare;
+    _maskLayer.lineWidth = _lineWidth;
+    _maskLayer.strokeColor = [UIColor blackColor].CGColor;
+    _maskLayer.strokeEnd = 0;
+    _maskLayer.fillColor = nil;
 }
 
 #pragma mark Setters
@@ -89,9 +84,21 @@
 
 - (void)setProgressTintColor:(UIColor *)progressTintColor
 {
+    if(self.baseLayer)
+    {
+        [_baseLayer removeFromSuperlayer];
+    }
+    
+    CALayer *solidLayer = [CALayer layer];
+    
     _progressTintColor = progressTintColor;
-    _progressLayer.strokeColor = _progressTintColor.CGColor;
-    _progressLayer.fillColor = [UIColor clearColor].CGColor;
+    solidLayer.frame = self.bounds;
+    solidLayer.backgroundColor = _progressTintColor.CGColor;
+    solidLayer.mask = _maskLayer;
+    
+    self.baseLayer = solidLayer;
+    
+    [self.layer addSublayer:solidLayer];
 }
 
 - (void)setLineWidth:(CGFloat)lineWidth
@@ -99,13 +106,27 @@
     _lineWidth = fmaxf(lineWidth, 1.f);
     
     _progressBackgroundLayer.lineWidth = _lineWidth;
-    _progressLayer.lineWidth = _lineWidth;
+    _maskLayer.lineWidth = _lineWidth;
 }
 
 - (void)setProgressGradientColors:(NSArray *)progressGradientColors
 {
-    _gradientLayer.colors = progressGradientColors;
-    _gradientLayer.mask = _progressLayer;
+    if(self.baseLayer)
+    {
+        [_baseLayer removeFromSuperlayer];
+    }
+    
+    CAGradientLayer *gradientLayer = [CAGradientLayer layer];
+    
+    gradientLayer.frame = self.bounds;
+    gradientLayer.startPoint = CGPointMake(0, 0.5);
+    gradientLayer.endPoint = CGPointMake(1, 0.5);
+    gradientLayer.colors = progressGradientColors;
+    gradientLayer.mask = _maskLayer;
+    
+    self.baseLayer = gradientLayer;
+    
+    [self.layer addSublayer:gradientLayer];
 }
 
 - (void)setCentralView:(UIView *)centralView
@@ -180,22 +201,22 @@
             animation.fromValue = @(self.progress);
             animation.toValue = [NSNumber numberWithFloat:progress];
             animation.duration = 1;
-            self.progressLayer.strokeEnd = progress;
-            [self.progressLayer addAnimation:animation forKey:@"animation"];
+            self.maskLayer.strokeEnd = progress;
+            [self.maskLayer addAnimation:animation forKey:@"animation"];
             [CATransaction commit];
         }
         else
         {
             [CATransaction begin];
             [CATransaction setDisableActions:YES];
-            self.progressLayer.strokeEnd = progress;
+            self.maskLayer.strokeEnd = progress;
             [CATransaction commit];
         }
     }
     else
     {
-        self.progressLayer.strokeEnd = 0.0f;
-        [self.progressLayer removeAnimationForKey:@"animation"];
+        self.maskLayer.strokeEnd = 0.0f;
+        [self.maskLayer removeAnimationForKey:@"animation"];
     }
     _progress = progress;
 }
@@ -209,10 +230,9 @@
     CGPoint center = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
     CGFloat radius = (self.bounds.size.width - _lineWidth)/2;
     
-    self.gradientLayer.frame = self.bounds;
-    self.progressLayer.frame = self.bounds;
+    self.maskLayer.frame = self.bounds;
     self.centralView.center = center;
-    self.progressLayer.path = [UIBezierPath bezierPathWithArcCenter:center radius:radius startAngle:-M_PI_2 endAngle:-M_PI_2 + (2 * M_PI) clockwise:YES].CGPath;
+    self.maskLayer.path = [UIBezierPath bezierPathWithArcCenter:center radius:radius startAngle:-M_PI_2 endAngle:-M_PI_2 + (2 * M_PI) clockwise:YES].CGPath;
 }
 
 #pragma mark - Visibility

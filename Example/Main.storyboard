@@ -17,7 +17,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OZP-SL-slG">
-                                <rect key="frame" x="161" y="517" width="46" height="30"/>
+                                <rect key="frame" x="187" y="466" width="46" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Show">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -27,7 +27,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MBJ-hb-nHf">
-                                <rect key="frame" x="241" y="517" width="46" height="30"/>
+                                <rect key="frame" x="247" y="466" width="46" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="46" id="erX-l5-TPZ"/>
@@ -58,7 +58,7 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </slider>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qEG-QF-B2p">
-                                <rect key="frame" x="209" y="429" width="60" height="30"/>
+                                <rect key="frame" x="209" y="420" width="60" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Animate">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -73,15 +73,26 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Zz5-PX-UHc">
+                                <rect key="frame" x="129" y="517" width="180" height="29"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <segments>
+                                    <segment title="Solid Color"/>
+                                    <segment title="Gradient Color"/>
+                                </segments>
+                                <connections>
+                                    <action selector="segmentValueChanged:" destination="Efn-bx-rtd" eventType="valueChanged" id="41r-MG-Wif"/>
+                                </connections>
+                            </segmentedControl>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="OZP-SL-slG" firstAttribute="leading" secondItem="w3D-Y7-KkO" secondAttribute="leading" constant="161" id="1Nq-x3-ZdA"/>
+                            <constraint firstItem="OZP-SL-slG" firstAttribute="leading" secondItem="w3D-Y7-KkO" secondAttribute="leading" constant="187" id="1Nq-x3-ZdA"/>
                             <constraint firstItem="uiv-J2-M0X" firstAttribute="leading" secondItem="w3D-Y7-KkO" secondAttribute="leading" constant="41" id="64z-Cp-8aR"/>
-                            <constraint firstItem="OZP-SL-slG" firstAttribute="top" secondItem="uiv-J2-M0X" secondAttribute="bottom" constant="-31" id="AP5-n1-dhQ"/>
-                            <constraint firstItem="OZP-SL-slG" firstAttribute="trailing" secondItem="uiv-J2-M0X" secondAttribute="trailing" constant="117" id="NXB-UP-10g"/>
-                            <constraint firstItem="d9O-Uj-UmH" firstAttribute="top" secondItem="OZP-SL-slG" secondAttribute="bottom" constant="21" id="jlD-3i-568"/>
-                            <constraint firstItem="MBJ-hb-nHf" firstAttribute="leading" secondItem="OZP-SL-slG" secondAttribute="trailing" constant="34" id="ubh-Zb-WL7"/>
+                            <constraint firstItem="OZP-SL-slG" firstAttribute="top" secondItem="uiv-J2-M0X" secondAttribute="bottom" constant="-82" id="AP5-n1-dhQ"/>
+                            <constraint firstItem="OZP-SL-slG" firstAttribute="trailing" secondItem="uiv-J2-M0X" secondAttribute="trailing" constant="143" id="NXB-UP-10g"/>
+                            <constraint firstItem="d9O-Uj-UmH" firstAttribute="top" secondItem="OZP-SL-slG" secondAttribute="bottom" constant="72" id="jlD-3i-568"/>
+                            <constraint firstItem="MBJ-hb-nHf" firstAttribute="leading" secondItem="OZP-SL-slG" secondAttribute="trailing" constant="14" id="ubh-Zb-WL7"/>
                             <constraint firstItem="MBJ-hb-nHf" firstAttribute="baseline" secondItem="OZP-SL-slG" secondAttribute="baseline" id="w9w-YO-6WJ"/>
                         </constraints>
                     </view>
@@ -89,6 +100,7 @@
                         <outlet property="btnAnimate" destination="qEG-QF-B2p" id="55Q-38-JYU"/>
                         <outlet property="btnHide" destination="MBJ-hb-nHf" id="eNo-Cy-p66"/>
                         <outlet property="btnShow" destination="OZP-SL-slG" id="mxd-YC-hNq"/>
+                        <outlet property="segmentColorControl" destination="Zz5-PX-UHc" id="WLA-K3-cwg"/>
                         <outlet property="sliderProgress" destination="K6z-2W-Epm" id="kIX-jX-OyU"/>
                         <outlet property="switchInnerCircle" destination="uiv-J2-M0X" id="8IL-mo-mES"/>
                     </connections>

@@ -66,6 +66,9 @@
     
     _progressLayer.lineCap = kCALineCapSquare;
     _progressLayer.lineWidth = _lineWidth;
+    _progressLayer.strokeColor = self.progressTintColor.CGColor;
+    _progressLayer.strokeEnd = 0;
+    _progressLayer.fillColor = nil;
     [self.layer addSublayer:_progressLayer];
     
     self.gradientLayer = [CAGradientLayer layer];
@@ -202,6 +205,7 @@
     CGPoint center = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
     CGFloat radius = (self.bounds.size.width - _lineWidth)/2;
     
+    self.gradientLayer.frame = self.bounds;
     self.progressLayer.frame = self.bounds;
     self.centralView.center = center;
     self.progressLayer.path = [UIBezierPath bezierPathWithArcCenter:center radius:radius startAngle:-M_PI_2 endAngle:-M_PI_2 + (2 * M_PI) clockwise:YES].CGPath;

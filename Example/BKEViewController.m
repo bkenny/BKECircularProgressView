@@ -49,7 +49,7 @@
     UISwitch *innerCircleSwitch = (UISwitch *) sender;
     if(innerCircleSwitch.on)
     {
-        [_progressView setInnerCircleColor:[UIColor purpleColor]];
+        [_progressView setInnerCircleColor:[UIColor colorWithRed:243.0/255.0 green:144.0/255.0 blue:52.0/255.0 alpha:1]];
     }
     else
     {

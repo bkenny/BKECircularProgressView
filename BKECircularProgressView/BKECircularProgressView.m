@@ -40,6 +40,7 @@
     self.centralView = nil;
     
     self.backgroundColor = [UIColor clearColor];
+    _innerCircleColor = [UIColor clearColor];
     
     _lineWidth = fmaxf(self.frame.size.width * 0.025, 1.f);
     _progressTintColor = [UIColor redColor];
@@ -112,6 +113,12 @@
     
     CGPoint center = CGPointMake(self.bounds.size.width/2, self.bounds.size.height/2);
     CGFloat radius = (self.bounds.size.width - _lineWidth)/2;
+    
+    CGContextRef inner = UIGraphicsGetCurrentContext();
+    CGContextSetFillColorWithColor(inner, _innerCircleColor.CGColor);
+    CGContextAddEllipseInRect(inner, CGRectMake(rect.origin.x + _lineWidth, rect.origin.y + _lineWidth,
+                                                rect.size.width - (_lineWidth*2), rect.size.height - (_lineWidth*2)));
+    CGContextFillPath(inner);
     
     // Draw background
     [self drawBackgroundCircle];

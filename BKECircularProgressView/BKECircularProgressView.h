@@ -36,6 +36,12 @@
  * The colors gradient of the progress view
  */
 @property (nonatomic, strong) NSArray *progressGradientColors;
+
+/*
+ * The color inner circle
+ */
+@property (nonatomic, strong) UIColor *innerCircleColor;
+
  /*
  *  The view in the center of the progress view.
  *

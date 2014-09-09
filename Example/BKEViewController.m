@@ -21,6 +21,17 @@
 {
     [super viewDidLoad];
     
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(115, 140, 100.0, 20.0)];
+	[label setTextAlignment:NSTextAlignmentCenter];
+    label.textColor = [UIColor blackColor];
+    label.text = @"Fill inner circle";
+	label.font = [UIFont systemFontOfSize:14];
+    [self.view addSubview:label];
+    
+    UISwitch *innerCircleSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(135, 160, 0.0f, 0.0f)];
+    [innerCircleSwitch addTarget: self action: @selector(flip:) forControlEvents:UIControlEventValueChanged];
+    [self.view addSubview:innerCircleSwitch];
+    
     [self displayProgressView];
     [self showProgress];
 }
@@ -53,5 +64,19 @@
         }
     });
 }
+
+- (IBAction) flip: (id) sender
+{
+    UISwitch *innerCircleSwitch = (UISwitch *) sender;
+    if(innerCircleSwitch.on)
+    {
+        [_progressView setInnerCircleColor:[UIColor purpleColor]];
+    }
+    else
+    {
+        [_progressView setInnerCircleColor:[UIColor clearColor]];
+    }
+}
+
 
 @end

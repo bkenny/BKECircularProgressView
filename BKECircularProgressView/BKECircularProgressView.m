@@ -78,18 +78,21 @@
 
 #pragma mark Setters
 
-- (void)setBackgroundTintColor:(UIColor *)backgroundTintColor {
+- (void)setBackgroundTintColor:(UIColor *)backgroundTintColor
+{
     _backgroundTintColor = backgroundTintColor;
     _progressBackgroundLayer.strokeColor = _backgroundTintColor.CGColor;
 }
 
-- (void)setProgressTintColor:(UIColor *)progressTintColor {
+- (void)setProgressTintColor:(UIColor *)progressTintColor
+{
     _progressTintColor = progressTintColor;
     _progressLayer.strokeColor = _progressTintColor.CGColor;
     _progressLayer.fillColor = [UIColor clearColor].CGColor;
 }
 
-- (void)setLineWidth:(CGFloat)lineWidth {
+- (void)setLineWidth:(CGFloat)lineWidth
+{
     _lineWidth = fmaxf(lineWidth, 1.f);
     
     _progressBackgroundLayer.lineWidth = _lineWidth;
@@ -112,36 +115,28 @@
     }
 }
 
+- (void)setInnerCircleColor:(UIColor *)innerCircleColor
+{
+    _innerCircleColor = innerCircleColor;
+    [self setNeedsDisplay];
+}
+
 #pragma mark Drawing
 
 - (void)drawRect:(CGRect)rect
-{
-    // Make sure the layers cover the whole view
-    _progressBackgroundLayer.frame = self.bounds;
-    _progressLayer.frame = self.bounds;    
-    
-    CGPoint center = CGPointMake(self.bounds.size.width/2, self.bounds.size.height/2);
-    CGFloat radius = (self.bounds.size.width - _lineWidth)/2;
-    
-    CGContextRef inner = UIGraphicsGetCurrentContext();
-    CGContextSetFillColorWithColor(inner, _innerCircleColor.CGColor);
-    CGContextAddEllipseInRect(inner, CGRectMake(rect.origin.x + _lineWidth, rect.origin.y + _lineWidth,
+{    
+    CGContextRef ctx = UIGraphicsGetCurrentContext();
+    CGContextSetFillColorWithColor(ctx, _innerCircleColor.CGColor);
+    CGContextAddEllipseInRect(ctx, CGRectMake(rect.origin.x + _lineWidth, rect.origin.y + _lineWidth,
                                                 rect.size.width - (_lineWidth*2), rect.size.height - (_lineWidth*2)));
-    CGContextFillPath(inner);
+    CGContextFillPath(ctx);
     
     // Draw background
     [self drawBackgroundCircle];
     
-    // Draw progress
-    CGFloat startAngle = - ((float)M_PI / 2); // 90 degrees
-    CGFloat endAngle = (self.progress * 2 * (float)M_PI) + startAngle;
-    UIBezierPath *processPath = [UIBezierPath bezierPath];
-    processPath.lineCapStyle = kCGLineCapButt;
-    processPath.lineWidth = _lineWidth;
-    
-    [processPath addArcWithCenter:center radius:radius startAngle:startAngle endAngle:endAngle clockwise:YES];
-    
-    [_progressLayer setPath:processPath.CGPath];
+    CGContextSetFillColorWithColor(ctx, self.progressTintColor.CGColor);
+    CGContextSetStrokeColorWithColor(ctx, self.progressTintColor.CGColor);
+    CGContextStrokeEllipseInRect(ctx, CGRectInset(self.bounds, 1, 1));
 }
 
 - (void)drawBackgroundCircle {
@@ -173,14 +168,17 @@
     {
         if (animated)
         {
+            [CATransaction begin];
             CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
             animation.fromValue = @(self.progress);
             animation.toValue = [NSNumber numberWithFloat:progress];
             animation.duration = 1;
             self.progressLayer.strokeEnd = progress;
             [self.progressLayer addAnimation:animation forKey:@"animation"];
+            [CATransaction commit];
         }
-        else {
+        else
+        {
             [CATransaction begin];
             [CATransaction setDisableActions:YES];
             self.progressLayer.strokeEnd = progress;
@@ -192,10 +190,7 @@
         self.progressLayer.strokeEnd = 0.0f;
         [self.progressLayer removeAnimationForKey:@"animation"];
     }
-    if (_progress != progress)
-    {
-        _progress = progress;
-    }
+    _progress = progress;
 }
 
 #pragma mark - Layout
@@ -203,7 +198,13 @@
 - (void)layoutSubviews
 {
     [super layoutSubviews];
-    self.centralView.center = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
+    
+    CGPoint center = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
+    CGFloat radius = (self.bounds.size.width - _lineWidth)/2;
+    
+    self.progressLayer.frame = self.bounds;
+    self.centralView.center = center;
+    self.progressLayer.path = [UIBezierPath bezierPathWithArcCenter:center radius:radius startAngle:-M_PI_2 endAngle:-M_PI_2 + (2 * M_PI) clockwise:YES].CGPath;
 }
 
 #pragma mark - Visibility
@@ -245,7 +246,6 @@
 
 - (void)show
 {
-    [self setNeedsDisplay];
     self.alpha = 1.0f;
 }
 

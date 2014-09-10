@@ -152,8 +152,8 @@
     
     // Draw inner circle
     CGContextSetFillColorWithColor(ctx, _innerCircleColor.CGColor);
-    CGContextAddEllipseInRect(ctx, CGRectMake(rect.origin.x + _lineWidth, rect.origin.y + _lineWidth,
-                                                rect.size.width - (_lineWidth*2), rect.size.height - (_lineWidth*2)));
+    CGContextAddEllipseInRect(ctx, CGRectMake(rect.origin.x + _lineWidth-1, rect.origin.y + _lineWidth-1,
+                                                rect.size.width - (_lineWidth*2)+2, rect.size.height - (_lineWidth*2)+2));
     CGContextFillPath(ctx);
     
     // Draw progress

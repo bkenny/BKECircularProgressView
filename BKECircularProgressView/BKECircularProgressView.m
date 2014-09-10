@@ -147,14 +147,17 @@
 {
     CGContextRef ctx = UIGraphicsGetCurrentContext();
     
+    // Draw background
+    [self drawBackgroundCircle];
+    
     // Draw inner circle
     CGContextSetFillColorWithColor(ctx, _innerCircleColor.CGColor);
     CGContextAddEllipseInRect(ctx, CGRectMake(rect.origin.x + _lineWidth, rect.origin.y + _lineWidth,
                                                 rect.size.width - (_lineWidth*2), rect.size.height - (_lineWidth*2)));
     CGContextFillPath(ctx);
     
-    // Draw background
-    [self drawBackgroundCircle];
+    // Draw progress
+    [self drawProgressCircle];
 }
 
 - (void)drawBackgroundCircle
@@ -172,6 +175,23 @@
     [processBackgroundPath addArcWithCenter:center radius:radius startAngle:startAngle endAngle:endAngle clockwise:YES];
     
     _progressBackgroundLayer.path = processBackgroundPath.CGPath;
+}
+
+- (void)drawProgressCircle
+{
+    CGFloat startAngle = -M_PI_2; // 90 degrees
+    CGFloat endAngle = -M_PI_2 + (2 * M_PI);
+    CGPoint center = CGPointMake(self.bounds.size.width/2, self.bounds.size.height/2);
+    CGFloat radius = (self.bounds.size.width - _lineWidth)/2;
+
+    // Draw progress
+    UIBezierPath *processPath = [UIBezierPath bezierPath];
+    processPath.lineWidth = _lineWidth;
+    processPath.lineCapStyle = kCGLineCapButt;
+    
+    [processPath addArcWithCenter:center radius:radius startAngle:startAngle endAngle:endAngle clockwise:YES];
+    
+    _maskLayer.path = processPath.CGPath;
 }
 
 - (void)setProgress:(CGFloat)progress
@@ -219,11 +239,9 @@
     [super layoutSubviews];
     
     CGPoint center = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
-    CGFloat radius = (self.bounds.size.width - _lineWidth)/2;
     
     self.maskLayer.frame = self.bounds;
     self.centralView.center = center;
-    self.maskLayer.path = [UIBezierPath bezierPathWithArcCenter:center radius:radius startAngle:-M_PI_2 endAngle:-M_PI_2 + (2 * M_PI) clockwise:YES].CGPath;
 }
 
 #pragma mark - Visibility

@@ -22,7 +22,6 @@
 		364C1D051892B8CA00CB8360 /* BKECircularProgressViewTests-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 362D6BB31892B823004C41AC /* BKECircularProgressViewTests-Info.plist */; };
 		364C1D081892B8EA00CB8360 /* BKECircularProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 364C1D071892B8EA00CB8360 /* BKECircularProgressView.m */; };
 		364C1D0B1892B90800CB8360 /* BKEViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 364C1D0A1892B90800CB8360 /* BKEViewController.m */; };
-		DDACB6CC19BF71E60088C682 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DDACB6CB19BF71E60088C682 /* Main.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,7 +55,6 @@
 		364C1D071892B8EA00CB8360 /* BKECircularProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKECircularProgressView.m; sourceTree = "<group>"; };
 		364C1D091892B90800CB8360 /* BKEViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BKEViewController.h; sourceTree = "<group>"; };
 		364C1D0A1892B90800CB8360 /* BKEViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKEViewController.m; sourceTree = "<group>"; };
-		DDACB6CB19BF71E60088C682 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -148,7 +146,6 @@
 				364C1CF91892B85400CB8360 /* BKEAppDelegate.m */,
 				364C1D091892B90800CB8360 /* BKEViewController.h */,
 				364C1D0A1892B90800CB8360 /* BKEViewController.m */,
-				DDACB6CB19BF71E60088C682 /* Main.storyboard */,
 				364C1D0C1892B91000CB8360 /* Resources */,
 			);
 			path = Example;
@@ -245,7 +242,6 @@
 				364C1D051892B8CA00CB8360 /* BKECircularProgressViewTests-Info.plist in Resources */,
 				364C1D031892B85400CB8360 /* Images.xcassets in Resources */,
 				364C1D021892B85400CB8360 /* InfoPlist.strings in Resources */,
-				DDACB6CC19BF71E60088C682 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

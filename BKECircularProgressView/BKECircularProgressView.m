@@ -9,13 +9,16 @@
 #import "BKECircularProgressView.h"
 
 @interface BKECircularProgressView()
+
 @property (nonatomic, strong) CAShapeLayer *progressBackgroundLayer;
-@property (nonatomic, strong) CAShapeLayer *progressLayer;
-@property (nonatomic, strong) CAGradientLayer *gradientLayer;
+@property (nonatomic, strong) CAShapeLayer *maskLayer;
+@property (nonatomic, strong) CALayer *baseLayer;
 
 @end
 
 @implementation BKECircularProgressView
+
+#pragma mark - Init
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -36,11 +39,17 @@
 }
 
 
-- (void)setup {
+- (void)setup
+{
     self.centralView = nil;
+    self.baseLayer = nil;
+    
+    self.removeFromSuperViewOnHide = NO;
     
     self.backgroundColor = [UIColor clearColor];
     _innerCircleColor = [UIColor clearColor];
+    
+    _progress = 0.0f;
     
     _lineWidth = fmaxf(self.frame.size.width * 0.025, 1.f);
     _progressTintColor = [UIColor redColor];
@@ -53,44 +62,67 @@
     _progressBackgroundLayer.lineWidth = _lineWidth;
     [self.layer addSublayer:_progressBackgroundLayer];
     
-    self.progressLayer = [CAShapeLayer layer];
+    self.maskLayer = [CAShapeLayer layer];
     
-    _progressLayer.lineCap = kCALineCapSquare;
-    _progressLayer.lineWidth = _lineWidth;
-    [self.layer addSublayer:_progressLayer];
-    
-    self.gradientLayer = [CAGradientLayer layer];
-
-    _gradientLayer.frame = self.bounds;
-    _gradientLayer.startPoint = CGPointMake(0, 0.5);
-    _gradientLayer.endPoint = CGPointMake(1, 0.5);
-    [self.layer addSublayer:_gradientLayer];
+    _maskLayer.lineWidth = _lineWidth;
+    _maskLayer.strokeColor = [UIColor blackColor].CGColor;
+    _maskLayer.strokeEnd = 0;
+    _maskLayer.fillColor = nil;
 }
 
 #pragma mark Setters
 
-- (void)setBackgroundTintColor:(UIColor *)backgroundTintColor {
+- (void)setBackgroundTintColor:(UIColor *)backgroundTintColor
+{
     _backgroundTintColor = backgroundTintColor;
     _progressBackgroundLayer.strokeColor = _backgroundTintColor.CGColor;
 }
 
-- (void)setProgressTintColor:(UIColor *)progressTintColor {
+- (void)setProgressTintColor:(UIColor *)progressTintColor
+{
+    if(self.baseLayer)
+    {
+        [_baseLayer removeFromSuperlayer];
+    }
+    
+    CALayer *solidLayer = [CALayer layer];
+    
     _progressTintColor = progressTintColor;
-    _progressLayer.strokeColor = _progressTintColor.CGColor;
-    _progressLayer.fillColor = [UIColor clearColor].CGColor;
+    solidLayer.frame = self.bounds;
+    solidLayer.backgroundColor = _progressTintColor.CGColor;
+    solidLayer.mask = _maskLayer;
+    
+    self.baseLayer = solidLayer;
+    
+    [self.layer addSublayer:solidLayer];
 }
 
-- (void)setLineWidth:(CGFloat)lineWidth {
+- (void)setLineWidth:(CGFloat)lineWidth
+{
     _lineWidth = fmaxf(lineWidth, 1.f);
     
     _progressBackgroundLayer.lineWidth = _lineWidth;
-    _progressLayer.lineWidth = _lineWidth;
+    _maskLayer.lineWidth = _lineWidth;
 }
 
 - (void)setProgressGradientColors:(NSArray *)progressGradientColors
 {
-    _gradientLayer.colors = progressGradientColors;
-    _gradientLayer.mask = _progressLayer;
+    if(self.baseLayer)
+    {
+        [_baseLayer removeFromSuperlayer];
+    }
+    
+    CAGradientLayer *gradientLayer = [CAGradientLayer layer];
+    
+    gradientLayer.frame = self.bounds;
+    gradientLayer.startPoint = CGPointMake(0, 0.5);
+    gradientLayer.endPoint = CGPointMake(1, 0.5);
+    gradientLayer.colors = progressGradientColors;
+    gradientLayer.mask = _maskLayer;
+    
+    self.baseLayer = gradientLayer;
+    
+    [self.layer addSublayer:gradientLayer];
 }
 
 - (void)setCentralView:(UIView *)centralView
@@ -103,42 +135,35 @@
     }
 }
 
+- (void)setInnerCircleColor:(UIColor *)innerCircleColor
+{
+    _innerCircleColor = innerCircleColor;
+    [self setNeedsDisplay];
+}
+
 #pragma mark Drawing
 
 - (void)drawRect:(CGRect)rect
 {
-    // Make sure the layers cover the whole view
-    _progressBackgroundLayer.frame = self.bounds;
-    _progressLayer.frame = self.bounds;    
-    
-    CGPoint center = CGPointMake(self.bounds.size.width/2, self.bounds.size.height/2);
-    CGFloat radius = (self.bounds.size.width - _lineWidth)/2;
-    
-    CGContextRef inner = UIGraphicsGetCurrentContext();
-    CGContextSetFillColorWithColor(inner, _innerCircleColor.CGColor);
-    CGContextAddEllipseInRect(inner, CGRectMake(rect.origin.x + _lineWidth, rect.origin.y + _lineWidth,
-                                                rect.size.width - (_lineWidth*2), rect.size.height - (_lineWidth*2)));
-    CGContextFillPath(inner);
+    CGContextRef ctx = UIGraphicsGetCurrentContext();
     
     // Draw background
     [self drawBackgroundCircle];
     
+    // Draw inner circle
+    CGContextSetFillColorWithColor(ctx, _innerCircleColor.CGColor);
+    CGContextAddEllipseInRect(ctx, CGRectMake(rect.origin.x + _lineWidth-1, rect.origin.y + _lineWidth-1,
+                                                rect.size.width - (_lineWidth*2)+2, rect.size.height - (_lineWidth*2)+2));
+    CGContextFillPath(ctx);
+    
     // Draw progress
-    CGFloat startAngle = - ((float)M_PI / 2); // 90 degrees
-    // CGFloat endAngle = (2 * (float)M_PI) + startAngle;
-    CGFloat endAngle = (self.progress * 2 * (float)M_PI) + startAngle;
-    UIBezierPath *processPath = [UIBezierPath bezierPath];
-    processPath.lineCapStyle = kCGLineCapButt;
-    processPath.lineWidth = _lineWidth;
-    
-    [processPath addArcWithCenter:center radius:radius startAngle:startAngle endAngle:endAngle clockwise:YES];
-    
-    [_progressLayer setPath:processPath.CGPath];
+    [self drawProgressCircle];
 }
 
-- (void)drawBackgroundCircle {
-    CGFloat startAngle = - ((float)M_PI / 2); // 90 degrees
-    CGFloat endAngle = (2 * (float)M_PI) + startAngle;
+- (void)drawBackgroundCircle
+{
+    CGFloat startAngle = -M_PI_2; // 90 degrees
+    CGFloat endAngle = startAngle + (2 * M_PI);
     CGPoint center = CGPointMake(self.bounds.size.width/2, self.bounds.size.height/2);
     CGFloat radius = (self.bounds.size.width - _lineWidth)/2;
     
@@ -150,6 +175,23 @@
     [processBackgroundPath addArcWithCenter:center radius:radius startAngle:startAngle endAngle:endAngle clockwise:YES];
     
     _progressBackgroundLayer.path = processBackgroundPath.CGPath;
+}
+
+- (void)drawProgressCircle
+{
+    CGFloat startAngle = -M_PI_2; // 90 degrees
+    CGFloat endAngle = -M_PI_2 + (2 * M_PI);
+    CGPoint center = CGPointMake(self.bounds.size.width/2, self.bounds.size.height/2);
+    CGFloat radius = (self.bounds.size.width - _lineWidth)/2;
+
+    // Draw progress
+    UIBezierPath *processPath = [UIBezierPath bezierPath];
+    processPath.lineWidth = _lineWidth;
+    processPath.lineCapStyle = kCGLineCapButt;
+    
+    [processPath addArcWithCenter:center radius:radius startAngle:startAngle endAngle:endAngle clockwise:YES];
+    
+    _maskLayer.path = processPath.CGPath;
 }
 
 - (void)setProgress:(CGFloat)progress
@@ -165,29 +207,29 @@
     {
         if (animated)
         {
+            [CATransaction begin];
             CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
-            animation.fromValue = self.progress == 0 ? @0 : nil;
+            animation.fromValue = @(self.progress);
             animation.toValue = [NSNumber numberWithFloat:progress];
             animation.duration = 1;
-            self.progressLayer.strokeEnd = progress;
-            [self.progressLayer addAnimation:animation forKey:@"animation"];
+            self.maskLayer.strokeEnd = progress;
+            [self.maskLayer addAnimation:animation forKey:@"animation"];
+            [CATransaction commit];
         }
-        else {
+        else
+        {
             [CATransaction begin];
             [CATransaction setDisableActions:YES];
-            self.progressLayer.strokeEnd = progress;
+            self.maskLayer.strokeEnd = progress;
             [CATransaction commit];
         }
     }
     else
     {
-        self.progressLayer.strokeEnd = 0.0f;
-        [self.progressLayer removeAnimationForKey:@"animation"];
+        self.maskLayer.strokeEnd = 0.0f;
+        [self.maskLayer removeAnimationForKey:@"animation"];
     }
-    if (_progress != progress)
-    {
-        _progress = progress;
-    }
+    _progress = progress;
 }
 
 #pragma mark - Layout
@@ -195,7 +237,53 @@
 - (void)layoutSubviews
 {
     [super layoutSubviews];
-    self.centralView.center = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
+    
+    CGPoint center = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
+    
+    self.maskLayer.frame = self.bounds;
+    self.centralView.center = center;
+}
+
+#pragma mark - Visibility
+
+- (instancetype)BKEProgressForView:(UIView *)view
+{
+	NSEnumerator *subviewsEnum = [view.subviews reverseObjectEnumerator];
+	for (UIView *subview in subviewsEnum)
+    {
+		if ([subview isKindOfClass:[BKECircularProgressView class]])
+        {
+			return (BKECircularProgressView *)subview;
+		}
+	}
+	return nil;
+}
+
+- (BOOL)hideBKEProgressForView:(UIView *)view
+{
+	BKECircularProgressView *progressView = [self BKEProgressForView:view];
+	if (progressView != nil)
+    {
+		progressView.removeFromSuperViewOnHide = YES;
+		[progressView hide];
+		return YES;
+	}
+	return NO;
+}
+
+- (void)hide
+{
+	[NSObject cancelPreviousPerformRequestsWithTarget:self];
+	self.alpha = 0.0f;
+	if (self.removeFromSuperViewOnHide)
+    {
+		[self removeFromSuperview];
+	}
+}
+
+- (void)show
+{
+    self.alpha = 1.0f;
 }
 
 @end

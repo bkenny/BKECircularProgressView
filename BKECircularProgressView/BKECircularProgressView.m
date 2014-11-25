@@ -210,7 +210,7 @@
             [CATransaction begin];
             CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
             animation.fromValue = @(self.progress);
-            animation.toValue = [NSNumber numberWithFloat:progress];
+            animation.toValue = @(progress);
             animation.duration = 1;
             self.maskLayer.strokeEnd = progress;
             [self.maskLayer addAnimation:animation forKey:@"animation"];

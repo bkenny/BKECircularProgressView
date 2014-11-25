@@ -6,8 +6,6 @@
 //  Copyright (c) 2014 Brian Kenny. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-
 #import "BKEAppDelegate.h"
 
 int main(int argc, char * argv[])

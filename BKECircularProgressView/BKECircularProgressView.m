@@ -70,6 +70,8 @@
     _maskLayer.fillColor = nil;
     
     self.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionDefault];
+    self.animationDuration = 0.4;
+    
 }
 
 #pragma mark Setters
@@ -213,7 +215,7 @@
             CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
             animation.fromValue = @(self.progress);
             animation.toValue = @(progress);
-            animation.duration = 1;
+            animation.duration = self.animationDuration;
             animation.timingFunction = self.timingFunction;
             self.maskLayer.strokeEnd = progress;
             [self.maskLayer addAnimation:animation forKey:@"animation"];

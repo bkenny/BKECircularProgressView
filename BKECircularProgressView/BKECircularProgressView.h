@@ -23,6 +23,17 @@
 - (void)setProgress:(CGFloat)progress animated:(BOOL)animated;
 
 /**
+ Timing function for setting progress with animation
+ */
+
+@property (nonatomic, strong) CAMediaTimingFunction *timingFunction;
+
+/**
+ Duration of progress set animation
+ */
+@property (nonatomic, assign) CGFloat animationDuration;
+
+/**
  * The width of the line used to draw the progress view.
  **/
 @property (nonatomic, assign) CGFloat lineWidth;
